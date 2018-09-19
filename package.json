@@ -1,0 +1,38 @@
+{
+  "name": "urlshortener",
+  "version": "1.0.0",
+  "description": "Url shortener written in typescript",
+  "main": "dist/index.js",
+  "author": "Martin Roed",
+  "scripts": {
+    "test": "yarn build && ava --verbose",
+    "test:watch": "tsc && concurrently 'tsc -w' 'ava --watch'",
+    "build": "rm -rf dist && tsc",
+    "start": "node dist/index.js",
+    "watch": "tsc && concurrently 'nodemon dist/index.js' 'tsc -w'"
+  },
+  "dependencies": {
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0",
+    "koa": "^2.5.3",
+    "nodemon": "^1.18.4",
+    "random-words": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/koa-bodyparser": "^5.0.1",
+    "@types/koa-router": "^7.0.31",
+    "@types/koa": "^2.0.46",
+    "@types/supertest": "^2.0.6",
+    "ava": "^0.25.0",
+    "concurrently": "^4.0.1",
+    "supertest": "^3.3.0",
+    "tslint-immutable": "^4.7.0",
+    "tslint": "^5.11.0",
+    "typescript": "^3.0.3"
+  },
+  "ava": {
+    "files": [
+      "dist/**/*test.js"
+    ]
+  }
+}
