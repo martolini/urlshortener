@@ -19,7 +19,11 @@ router.get('/', ctx => {
 router.get('/shorten', ctx => {
   const { url = '', slug } = ctx.query as { url: string; slug: any };
   if (slug && shortenings[slug]) {
-    ctx.throw(409, `${slug} is already taken.`);
+    ctx.status = 409;
+    ctx.body = {
+      message: `${slug} is already taken.`,
+    };
+    return;
   }
   let output = null;
   if (slug) {
