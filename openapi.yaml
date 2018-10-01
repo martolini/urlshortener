@@ -1,0 +1,114 @@
+openapi: '3.0.0'
+info:
+  version: 1.0.0
+  title: Shorten URLs
+  license:
+    name: MIT
+servers:
+  - url: https://shorten.msroed.io/v1
+paths:
+  /shorten:
+    post:
+      summary: Create a shortened URL
+      operationId: createShortenedURL
+      x-code-samples:
+        - language: cli
+          source: shorten https://some-obscure-url.com?q=some%20long%20query%20param --slug fav-web
+          label: shorten-cli
+        - language: Javascript
+          source: "sdk.createShortenedURL({url: 'https://some-obscure-url.com?q=some%20long%20query%20param', slug: 'fav-web' })"
+          label: Javascript
+      requestBody:
+        required: true
+        content:
+          application/json; charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/ShortenRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/ShortenResponse'
+        '409':
+          description: Slug already taken
+          content:
+            application/json; charset=utf-8:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example: { 'message': 'hello-world is already taken.' }
+  /{slug}:
+    get:
+      summary: Resolve a slug
+      operationId: resolveSlug
+      description: Redirects to the url determined by the slug. Pass redirect=false if you want to see plain output.
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          description: The slug of the shortened url
+          schema:
+            type: string
+          example: foo-bar
+        - name: noredirect
+          in: query
+          required: false
+          example: true
+          schema:
+            type: boolean
+            default: false
+      responses:
+        200:
+          description: Success
+          content:
+            application/json; charset=utf-8:
+              schema:
+                type: object
+                properties:
+                  redirectUrl:
+                    type: string
+                example: { redirectUrl: 'https://some-obscure-url.com' }
+        302:
+          description: 'Redirect'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+components:
+  responses:
+    NotFound:
+      description: This is not found
+      content:
+        application/json; charset=utf-8:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            example:
+              { 'message': 'Can not find the resource you are asking for.' }
+
+  schemas:
+    ShortenRequest:
+      required:
+        - url
+      properties:
+        slug:
+          type: string
+        url:
+          type: string
+      example: { url: 'https://some-obscure-url.com/' }
+    ShortenResponse:
+      properties:
+        shortenedUrl:
+          type: string
+        slug:
+          type: string
+      example:
+        {
+          'shortenedUrl': 'https://shorten.msroed.io/v1/foo-bar',
+          'slug': 'foo-bar',
+        }

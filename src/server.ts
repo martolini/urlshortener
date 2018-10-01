@@ -3,21 +3,32 @@ import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
 import randomWords from 'random-words';
 
-const router = new Router();
+const apiRouter = new Router({
+  prefix: '/:version',
+});
+
+const URL_REGEX_VALIDATOR = /(https?|ftp)(-\.)?([^\s/?\.#-]+\.?)+([^\s]*)?$/;
+const SLUG_VALIDATOR = /^[a-z0-9]+-[a-z0-9]+$/;
 
 const shortenings: { [key: string]: string } = {};
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 
-router.get('/', ctx => {
+apiRouter.param('version', async (version, ctx, next) => {
+  ctx.state.version = version;
+  await next();
+});
+
+apiRouter.get('/', ctx => {
   ctx.body = {
-    message:
-      'Welcome. Do a get request to /shorten?url=<url> to shorten a url.',
+    versions: {
+      v1: '/v1/',
+    },
   };
 });
 
-router.get('/shorten', ctx => {
-  const { url = '', slug } = ctx.query as { url: string; slug: any };
+apiRouter.post('/shorten', ctx => {
+  const { url = '', slug } = ctx.request.body as { url: string; slug: any };
   if (slug && shortenings[slug]) {
     ctx.status = 409;
     ctx.body = {
@@ -25,8 +36,27 @@ router.get('/shorten', ctx => {
     };
     return;
   }
+
+  // Validate URL
+  if (!URL_REGEX_VALIDATOR.test(url)) {
+    console.log(url);
+    console.log(url.match(URL_REGEX_VALIDATOR));
+    ctx.status = 400;
+    ctx.body = {
+      message: `Please send a valid URL`,
+    };
+    return;
+  }
   let output = null;
   if (slug) {
+    // Validate slug
+    if (!SLUG_VALIDATOR.test(slug)) {
+      ctx.status = 400;
+      ctx.body = {
+        message: `${slug} needs to be on the format foo-bar. Examples are cloud-sky, freaky-friday, grumpy-bear.`,
+      };
+      return;
+    }
     shortenings[slug] = url;
     output = slug;
   } else {
@@ -35,30 +65,41 @@ router.get('/shorten', ctx => {
     output = words;
   }
   ctx.body = {
-    shortenedUrl: `${BASE_URL}/${output}`,
+    shortenedUrl: `${BASE_URL}/${ctx.state.version}/${output}`,
     slug: output,
   };
 });
 
-router.get('/healthz', ctx => {
-  ctx.body = {
-    success: true,
-  };
-});
-
-router.get('/:slug', ctx => {
+apiRouter.get('/:slug', ctx => {
   const short = shortenings[ctx.params.slug];
   if (short) {
+    if (ctx.query.noredirect) {
+      ctx.body = {
+        redirectUrl: short,
+      };
+      return;
+    }
     ctx.redirect(short);
   } else {
     ctx.status = 404;
+    ctx.body = {
+      message: 'Slug not found',
+    };
   }
 });
 
 const app = new Koa();
 
-app.use(bodyParser());
+const mainRouter = new Router();
 
-app.use(router.routes());
+mainRouter.get('/healthz', ctx => {
+  ctx.body = {
+    success: true,
+  };
+});
+
+app.use(bodyParser());
+app.use(mainRouter.routes());
+app.use(apiRouter.routes());
 
 export default app;
