@@ -13,3 +13,7 @@ deploy:
   project: martolini-urlshortener
   default: true
   skip_cleanup: true
+
+after_deploy:
+  - yarn generate:docs
+  - yarn publish:docs
