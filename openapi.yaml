@@ -11,13 +11,6 @@ paths:
     post:
       summary: Create a shortened URL
       operationId: createShortenedURL
-      x-code-samples:
-        - language: cli
-          source: shorten https://some-obscure-url.com?q=some%20long%20query%20param --slug fav-web
-          label: shorten-cli
-        - language: Javascript
-          source: "sdk.createShortenedURL({url: 'https://some-obscure-url.com?q=some%20long%20query%20param', slug: 'fav-web' })"
-          label: Javascript
       requestBody:
         required: true
         content:
