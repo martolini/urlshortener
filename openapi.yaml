@@ -4,13 +4,19 @@ info:
   title: Shorten URLs
   license:
     name: MIT
+  contact:
+    email: msroed@gmail.com
 servers:
   - url: https://shorten.msroed.io/v1
+tags:
+  - name: shorten
 paths:
   /shorten:
     post:
       summary: Create a shortened URL
       operationId: createShortenedURL
+      tags:
+        - shorten
       requestBody:
         required: true
         content:
@@ -39,6 +45,8 @@ paths:
       summary: Resolve a slug
       operationId: resolveSlug
       description: Redirects to the url determined by the slug. Pass redirect=false if you want to see plain output.
+      tags:
+        - shorten
       parameters:
         - name: slug
           in: path
@@ -49,8 +57,8 @@ paths:
           example: foo-bar
         - name: noredirect
           in: query
+          description: Will not redirect, but show contents of the redirect.
           required: false
-          example: true
           schema:
             type: boolean
             default: false

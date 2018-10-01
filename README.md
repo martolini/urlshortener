@@ -8,4 +8,8 @@ Simple url shortener API
 
 ## Docs
 
-https://urlshortener.surge.sh
+I would advise you to interact with the API through the cli tool `shorten-cli`.
+
+See https://github.com/martolini/shorten-cli
+
+API Reference: https://urlshortener.surge.sh
