@@ -30,6 +30,7 @@
     "concurrently": "^4.0.1",
     "redoc-cli": "^0.6.4",
     "supertest": "^3.3.0",
+    "surge": "^0.20.1",
     "tslint": "^5.11.0",
     "tslint-immutable": "^4.7.0",
     "typescript": "^3.0.3"
