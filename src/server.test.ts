@@ -38,3 +38,8 @@ test('Check health', async t => {
   const response = await request(server.callback()).get('/healthz');
   t.is(response.body.success, true);
 });
+
+test('Lookup', async t => {
+  const response = await request(server.callback()).get('/v1/lookup');
+  t.deepEqual(response.body.items, ['foo-bar']);
+});

@@ -88,6 +88,25 @@ paths:
           description: 'Redirect'
         404:
           $ref: '#/components/responses/NotFound'
+  /lookup:
+    get:
+      summary: 'Lookup all used slugs'
+      responses:
+        200:
+          description: Success
+          content:
+            application/json; charset=utf-8:
+              schema:
+                type: object
+                required:
+                  - items
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: string
+                      example: foo-bar
+                example: { items: ['slug1', 'slug2'] }
 
 components:
   responses:
