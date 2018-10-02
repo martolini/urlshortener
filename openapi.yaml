@@ -11,7 +11,7 @@ servers:
 tags:
   - name: shorten
 paths:
-  /{slug}:
+  /:
     post:
       summary: Create a shortened URL
       operationId: createShortenedURL
