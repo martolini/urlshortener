@@ -14,7 +14,7 @@
     "generate:docs": "(mkdir tmpdocs || true) && redoc-cli bundle openapi.yaml -o tmpdocs/index.html --title urlshortener",
     "publish:docs": "surge --project tmpdocs --domain urlshortener.surge.sh",
     "watch:docs": "redoc-cli serve openapi.yaml --watch",
-    "test:dredd": "yarn build && yarn start && api-spec-converter --from=openapi_3 --to=swagger_2 --syntax=yaml openapi.yaml > swagger.yaml && dredd swagger.yaml localhost:3000"
+    "test:dredd": "api-spec-converter --from=openapi_3 --to=swagger_2 --syntax=yaml openapi.yaml > swagger.yaml && dredd swagger.yaml localhost:3000 --hookfiles=./hooks.js"
   },
   "dependencies": {
     "koa": "^2.5.3",

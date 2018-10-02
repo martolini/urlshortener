@@ -2,6 +2,17 @@ language: node_js
 node_js:
   - '8'
 
+cache: yarn
+
+before_script:
+  - yarn global add api-spec-converter
+
+script:
+  - yarn test
+  - yarn build
+  - yarn start &
+  - yarn test:dredd
+
 before_deploy:
   - openssl aes-256-cbc -K $encrypted_3d656ef71c0e_key -iv $encrypted_3d656ef71c0e_iv
     -in gae-service-account.json.enc -out gae-service-account.json
