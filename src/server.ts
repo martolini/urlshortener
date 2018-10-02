@@ -19,16 +19,11 @@ apiRouter.param('version', async (version, ctx, next) => {
   await next();
 });
 
-apiRouter.get('/', ctx => {
-  ctx.body = {
-    versions: {
-      v1: '/v1/',
-    },
+apiRouter.post('/', ctx => {
+  const { url, slug } = ctx.request.body as {
+    url?: string;
+    slug?: string;
   };
-});
-
-apiRouter.post('/shorten', ctx => {
-  const { url = '', slug } = ctx.request.body as { url: string; slug: any };
   if (slug && shortenings[slug]) {
     ctx.status = 409;
     ctx.body = {
@@ -38,9 +33,7 @@ apiRouter.post('/shorten', ctx => {
   }
 
   // Validate URL
-  if (!URL_REGEX_VALIDATOR.test(url)) {
-    console.log(url);
-    console.log(url.match(URL_REGEX_VALIDATOR));
+  if (!(url && URL_REGEX_VALIDATOR.test(url))) {
     ctx.status = 400;
     ctx.body = {
       message: `Please send a valid URL`,
@@ -95,6 +88,14 @@ const mainRouter = new Router();
 mainRouter.get('/healthz', ctx => {
   ctx.body = {
     success: true,
+  };
+});
+
+mainRouter.get('/', ctx => {
+  ctx.body = {
+    versions: {
+      v1: '/v1/',
+    },
   };
 });
 

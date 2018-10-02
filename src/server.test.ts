@@ -6,7 +6,7 @@ const url = 'https://foo.bar';
 
 test('shorten url', async t => {
   const response = await request(server.callback())
-    .get('/v1/shorten')
+    .get('/v1')
     .send({ url });
   t.truthy(response.body);
 });
@@ -15,13 +15,13 @@ test('Pass in slugs', async t => {
   const slug = 'foo-bar';
   t.is(
     (await request(server.callback())
-      .post('/v1/shorten')
+      .post('/v1')
       .send({ url, slug })).status,
     200
   );
 
   const response = await request(server.callback())
-    .post('/v1/shorten')
+    .post('/v1')
     .send({ url, slug });
   t.is(response.status, 409);
 });
@@ -29,7 +29,7 @@ test('Pass in slugs', async t => {
 test('Test a slug', async t => {
   const slug = 'foo-bar';
   await request(server.callback())
-    .post('/v1/shorten')
+    .post('/v1')
     .send({ url, slug });
   t.is((await request(server.callback()).get('/v1/foo-bar')).status, 302);
 });
