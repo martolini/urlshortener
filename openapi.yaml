@@ -50,6 +50,7 @@ paths:
                   message:
                     type: string
                 example: { 'message': 'hello-world is already taken.' }
+  /{slug}:
     get:
       summary: Resolve a slug
       operationId: resolveSlug
@@ -71,6 +72,7 @@ paths:
           schema:
             type: boolean
             default: false
+          example: true
       responses:
         200:
           description: Success
