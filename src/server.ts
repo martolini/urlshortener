@@ -63,6 +63,12 @@ apiRouter.post('/', ctx => {
   };
 });
 
+apiRouter.get('/lookup', ctx => {
+  ctx.body = {
+    itemsss: Object.keys(shortenings),
+  };
+});
+
 apiRouter.get('/:slug', ctx => {
   const short = shortenings[ctx.params.slug];
   if (short) {
