@@ -1,0 +1,131 @@
+swagger: '2.0'
+info:
+  contact:
+    email: msroed@gmail.com
+  license:
+    name: MIT
+  title: Shorten URLs
+  version: 1.0.0
+host: shorten.msroed.io
+basePath: /v1
+schemes:
+  - https
+paths:
+  /:
+    post:
+      consumes:
+        - application/json; charset=utf-8
+      produces:
+        - application/json; charset=utf-8
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/ShortenRequest'
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/ShortenResponse'
+        '400':
+          description: Bad request format
+          schema:
+            example:
+              message: Please send a valid URL
+            properties:
+              message:
+                type: string
+            type: object
+        '409':
+          description: Slug already taken
+          schema:
+            example:
+              message: hello-world is already taken.
+            properties:
+              message:
+                type: string
+            type: object
+      tags:
+        - shorten
+      operationId: createShortenedURL
+      summary: Create a shortened URL
+  '/{slug}':
+    get:
+      produces:
+        - application/json; charset=utf-8
+      parameters:
+        - description: The slug of the shortened url
+          in: path
+          name: slug
+          required: true
+          type: string
+          x-example: foo-bar
+        - default: false
+          description: 'Do not redirect, show json instead.'
+          in: query
+          name: noredirect
+          required: false
+          type: boolean
+      responses:
+        '200':
+          description: Success
+          schema:
+            example:
+              redirectUrl: 'https://some-obscure-url.com'
+            properties:
+              redirectUrl:
+                type: string
+            type: object
+        '302':
+          description: Redirect
+        '404':
+          description: This is not found
+          schema:
+            example:
+              message: Can not find the resource you are asking for.
+            properties:
+              message:
+                type: string
+            type: object
+      tags:
+        - shorten
+      description: >-
+        Redirects to the url determined by the slug. Can respond with json if
+        `noresponse` is set.
+      operationId: resolveSlug
+      summary: Resolve a slug
+definitions:
+  ShortenRequest:
+    example:
+      url: 'https://some-obscure-url.com/'
+    properties:
+      slug:
+        type: string
+      url:
+        type: string
+    required:
+      - url
+  ShortenResponse:
+    example:
+      shortenedUrl: 'https://shorten.msroed.io/v1/foo-bar'
+      slug: foo-bar
+    properties:
+      shortenedUrl:
+        type: string
+      slug:
+        type: string
+tags:
+  - name: shorten
+x-components:
+  responses:
+    NotFound:
+      description: This is not found
+      schema:
+        example:
+          message: Can not find the resource you are asking for.
+        properties:
+          message:
+            type: string
+        type: object
+
