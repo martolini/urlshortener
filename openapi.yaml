@@ -54,7 +54,7 @@ paths:
     get:
       summary: Resolve a slug
       operationId: resolveSlug
-      description: Redirects to the url determined by the slug. Pass redirect=false if you want to see plain output.
+      description: Redirects to the url determined by the slug. Can respond with json if `noresponse` is set.
       tags:
         - shorten
       parameters:
@@ -67,7 +67,7 @@ paths:
           example: foo-bar
         - name: noredirect
           in: query
-          description: Will not redirect, but show contents of the redirect.
+          description: Do not redirect, show json instead.
           required: false
           schema:
             type: boolean

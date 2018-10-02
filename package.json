@@ -12,13 +12,14 @@
     "start": "node dist/index.js",
     "watch": "tsc && concurrently 'nodemon dist/index.js' 'tsc -w'",
     "generate:docs": "(mkdir tmpdocs || true) && redoc-cli bundle openapi.yaml -o tmpdocs/index.html --title urlshortener",
-    "publish:docs": "surge --project tmpdocs --domain urlshortener.surge.sh"
+    "publish:docs": "surge --project tmpdocs --domain urlshortener.surge.sh",
+    "watch:docs": "redoc-cli serve openapi.yaml --watch",
+    "test:dredd": "yarn build && yarn start && api-spec-converter --from=openapi_3 --to=swagger_2 --syntax=yaml openapi.yaml > swagger.yaml && dredd swagger.yaml localhost:3000"
   },
   "dependencies": {
     "koa": "^2.5.3",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
-    "nodemon": "^1.18.4",
     "random-words": "^1.1.0"
   },
   "devDependencies": {
@@ -26,8 +27,11 @@
     "@types/koa-bodyparser": "^5.0.1",
     "@types/koa-router": "^7.0.31",
     "@types/supertest": "^2.0.6",
+    "api-spec-converter": "^2.7.12",
     "ava": "^0.25.0",
     "concurrently": "^4.0.1",
+    "dredd": "^5.2.0",
+    "nodemon": "^1.18.4",
     "redoc-cli": "^0.6.4",
     "supertest": "^3.3.0",
     "surge": "^0.20.1",
