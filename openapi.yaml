@@ -72,7 +72,7 @@ paths:
           schema:
             type: boolean
             default: false
-          example: true
+          example: false
       responses:
         200:
           description: Success
