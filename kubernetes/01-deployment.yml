@@ -19,21 +19,3 @@ spec:
           image: eu.gcr.io/cognitedata/urlshortener:latest
           ports:
             - containerPort: 3000
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: urlshortener
-  annotations:
-    getambassador.io/config: |
-      ---
-      apiVersion: ambassador/v0
-      kind:  Mapping
-      name:  httpbin_mapping
-      prefix: /v1/shorten
-      service: urlshortener:3000
-spec:
-  ports:
-    - name: httpbin
-      port: 80
